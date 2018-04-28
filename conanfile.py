@@ -4,6 +4,7 @@
 from conans import ConanFile, tools
 from conans.errors import ConanException
 import os
+import shutil
 
 
 class AndroidNDKInstallerConan(ConanFile):
@@ -20,16 +21,15 @@ class AndroidNDKInstallerConan(ConanFile):
 
     settings = {"os_build": ["Windows", "Linux", "Macos"],
                 "arch_build": ["x86", "x86_64"],
+                "compiler": ["clang"],
+                "os": ["Android"],
                 "arch": ["x86", "x86_64", "mips", "mips64", "armv7", "armv8"]}
-    options = {"stl": ["gnustl", "libc++", "stlport"],
-               "api": list(range(14, 28))}
-    default_options = "stl=libc++", "api=21"
 
     def configure(self):
         if self.settings.os_build == "Linux" and self.settings.arch_build == "x86":
             raise ConanException("x86 %s host is not supported" % str(self.settings.os_build))
-        if str(self.settings.arch) in ["x86_64", "armv8", "mips64"] and int(str(self.options.api)) < 21:
-            raise ConanException("minumum API version for architecture %s is 21" % str(self.settings.arch))
+        if str(self.settings.arch) in ["x86_64", "armv8", "mips64"] and int(str(self.settings.os.api_level)) < 21:
+            raise ConanException("minumum API version for architecture %s is 21" % str(self.settings.os.api_level))
 
     def source(self):
         os_name = {"Windows": "windows",
@@ -57,26 +57,45 @@ class AndroidNDKInstallerConan(ConanFile):
 
     @property
     def triplet(self):
-        return '%s-linux-%s' % (self.android_arch, self.abi)
+        arch = {'arm': 'arm',
+                'arm64': 'aarch64',
+                'mips': 'mipsel',
+                'mips64': 'mips64el',
+                'x86': 'i686',
+                'x86_64': 'x86_64'}.get(self.android_arch)
+        return '%s-linux-%s' % (arch, self.abi)
 
     def build(self):
         ndk = "android-ndk-%s" % self.version
         make_standalone_toolchain = os.path.join(self.source_folder,
                                                  ndk, 'build', 'tools', 'make_standalone_toolchain.py')
+
+        # TODO : conan support for stlport
+        stl = 'libc++' if self.settings.compiler.libcxx == 'libc++' else 'gnustl'
+
         python = tools.which('python')
         command = '%s %s --arch %s --api %s --stl %s --install-dir %s' % (python,
                                                                           make_standalone_toolchain,
                                                                           self.android_arch,
-                                                                          str(self.options.api),
-                                                                          str(self.options.stl),
+                                                                          str(self.settings.os.api_level),
+                                                                          stl,
                                                                           self.package_folder)
         self.run(command)
+        if self.settings.os_build == 'Windows':
+            # workaround Windows CMake Clang detection (Determine-Compiler-Standalone.cmake)
+            with tools.chdir(os.path.join(self.package_folder, 'bin')):
+                self.run('dir')
+                shutil.copy('clang50.exe', 'clang.exe')
+                shutil.copy('clang50++.exe', 'clang++.exe')
 
     def package(self):
         self.copy(pattern="LICENSE", dst="license", src='.')
 
     def tool_name(self, tool):
-        suffix = '.exe' if self.settings.os_build == 'Windows' else ''
+        if 'clang' in tool:
+            suffix = '.cmd' if self.settings.os_build == 'Windows' else ''
+        else:
+            suffix = '.exe' if self.settings.os_build == 'Windows' else ''
         return '%s-%s%s' % (self.triplet, tool, suffix)
 
     def define_tool_var(self, name, value):
@@ -88,6 +107,9 @@ class AndroidNDKInstallerConan(ConanFile):
     def package_info(self):
         ndk_root = self.package_folder
         ndk_bin = os.path.join(ndk_root, 'bin')
+
+        self.output.info('Creating NDK_ROOT environment variable: %s' % ndk_root)
+        self.env_info.NDK_ROOT = ndk_root
 
         self.output.info('Creating CHOST environment variable: %s' % self.triplet)
         self.env_info.CHOST = self.triplet
@@ -112,3 +134,6 @@ class AndroidNDKInstallerConan(ConanFile):
         self.env_info.OBJDUMP = self.define_tool_var('OBJDUMP', 'objdump')
         self.env_info.READELF = self.define_tool_var('READELF', 'readelf')
         self.env_info.ELFEDIT = self.define_tool_var('ELFEDIT', 'elfedit')
+
+        self.cpp_info.includedirs.append(os.path.join(self.package_folder, 'include', 'c++', '4.9.x'))
+        self.cpp_info.libdirs.append(os.path.join(self.package_folder, self.triplet, 'lib64'))

@@ -11,7 +11,8 @@ class TestPackageConan(ConanFile):
     generators = "cmake"
 
     def build(self):
-        cmake = CMake(self)
+        generator = 'MinGW Makefiles' if os.name == 'nt' else 'Unix Makefiles'
+        cmake = CMake(self, generator=generator)
         cmake.configure()
         cmake.build()
 

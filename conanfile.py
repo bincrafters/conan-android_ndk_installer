@@ -77,7 +77,7 @@ class AndroidNDKInstallerConan(ConanFile):
 
     def tool_name(self, tool):
         suffix = '.exe' if self.settings.os_build == 'Windows' else ''
-        return '%s%s%s' % (self.triplet, tool, suffix)
+        return '%s-%s%s' % (self.triplet, tool, suffix)
 
     def define_tool_var(self, name, value):
         ndk_bin = os.path.join(self.package_folder, 'bin')

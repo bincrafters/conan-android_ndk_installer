@@ -39,11 +39,6 @@ The following command both runs all the steps of the conan file, and publishes t
     $ conan create bincrafters/testing
 
 
-### Available Options
-| Option        | Default | Possible Values  |
-| ------------- |:----------------- |:------------:|
-| stl      | libc++ |  ['gnustl', 'libc++', 'stlport'] |
-| api      | 21 |  [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27] |
 
 ## Add Remote
 
@@ -59,4 +54,4 @@ The following command both runs all the steps of the conan file, and publishes t
 NOTE: The conan recipe license applies only to the files of this recipe, which can be used to build and package android_ndk_installer.
 It does *not* in any way apply or is related to the actual software being packaged.
 
-[MIT](https://github.com/bincrafters/conan-android_ndk_installer.git/blob/testing/r16b/LICENSE.md)
+[MIT](git@github.com:bincrafters/conan-android_ndk_installer.git/blob/testing/r16b/LICENSE)

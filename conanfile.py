@@ -26,7 +26,7 @@ class AndroidNDKInstallerConan(ConanFile):
                 "arch": ["x86", "x86_64", "mips", "mips64", "armv7", "armv8"]}
 
     def configure(self):
-        if self.settings.os_build == "Linux" and self.settings.arch_build == "x86":
+        if str(self.settings.os_build) in ["Linux", "Macos"] and self.settings.arch_build == "x86":
             raise ConanException("x86 %s host is not supported" % str(self.settings.os_build))
         if str(self.settings.arch) in ["x86_64", "armv8", "mips64"] and int(str(self.settings.os.api_level)) < 21:
             raise ConanException("minumum API version for architecture %s is 21" % str(self.settings.os.api_level))

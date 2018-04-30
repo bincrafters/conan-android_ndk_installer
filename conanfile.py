@@ -153,7 +153,7 @@ class AndroidNDKInstallerConan(ConanFile):
         self.output.info('Creating CONAN_CMAKE_FIND_ROOT_PATH environment variable: %s' % ndk_sysroot)
         self.env_info.CONAN_CMAKE_FIND_ROOT_PATH = ndk_sysroot
 
-        make = os.path.join(ndk_bin, 'make')
+        make = os.path.join(ndk_bin, 'make.exe' if self.settings.os_build == 'Windows' else 'make')
         self.output.info('Creating CONAN_MAKE_PROGRAM environment variable: %s' % make)
         self.env_info.CONAN_MAKE_PROGRAM = make
 

@@ -4,6 +4,7 @@
 
 from bincrafters import build_template_default
 import platform
+import os
 
 if __name__ == "__main__":
 

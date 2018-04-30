@@ -87,6 +87,34 @@ class AndroidNDKInstallerConan(ConanFile):
                 self.run('dir')
                 shutil.copy('clang50.exe', 'clang.exe')
                 shutil.copy('clang50++.exe', 'clang++.exe')
+        else:
+            def chmod_plus_x(filename):
+                os.chmod(filename, os.stat(filename).st_mode | 0o111)
+
+            for root, _, files in os.walk(self.package_folder):
+                for filename in files:
+                    filename = os.path.join(root, filename)
+                    with open(filename, 'rb') as f:
+                        sig = f.read(4)
+                        if type(sig) is str:
+                            sig = [ord(s) for s in sig]
+                        if len(sig) > 2 and sig[0] == 0x23 and sig[1] == 0x21:
+                            self.output.info('chmod on script file: "%s"' % filename)
+                            chmod_plus_x(filename)
+                        elif sig == [0x7F, 0x45, 0x4C, 0x46]:
+                            self.output.info('chmod on ELF file: "%s"' % filename)
+                            chmod_plus_x(filename)
+                        elif \
+                            sig == [0xCA, 0xFE, 0xBA, 0xBE] or \
+                            sig == [0xBE, 0xBA, 0xFE, 0xCA] or \
+                            sig == [0xFE, 0xED, 0xFA, 0xCF] or \
+                            sig == [0xCF, 0xFA, 0xED, 0xFE] or \
+                            sig == [0xFE, 0xEF, 0xFA, 0xCE] or \
+                            sig == [0xCE, 0xFA, 0xED, 0xFE]:
+                            self.output.info('chmod on Mach-O file: "%s"' % filename)
+                            chmod_plus_x(filename)
+
+
 
     def package(self):
         self.copy(pattern="LICENSE", dst="license", src='.')

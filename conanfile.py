@@ -148,6 +148,10 @@ class AndroidNDKInstallerConan(ConanFile):
         self.output.info('Creating CONAN_CMAKE_FIND_ROOT_PATH environment variable: %s' % ndk_sysroot)
         self.env_info.CONAN_CMAKE_FIND_ROOT_PATH = ndk_sysroot
 
+        make = os.path.join(ndk_bin, 'make')
+        self.output.info('Creating CONAN_MAKE_PROGRAM environment variable: %s' % make)
+        self.env_info.CONAN_MAKE_PROGRAM = make
+
         self.env_info.CC = self.define_tool_var('CC', 'clang')
         self.env_info.CXX = self.define_tool_var('CXX', 'clang++')
         self.env_info.LD = self.define_tool_var('LD', 'ld')

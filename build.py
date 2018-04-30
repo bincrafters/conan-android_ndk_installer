@@ -20,7 +20,7 @@ if __name__ == "__main__":
     if platform.system() == 'Windows':
         settings['os_build'] = 'Windows'
         if 'ARCH_BUILD' in os.environ:
-            arches_build = os.environ['ARCH_BUILD']
+            arches_build = [os.environ['ARCH_BUILD']]
         else:
             arches_build = ['x86', 'x86_64']
     elif platform.system() == 'Linux':
@@ -33,7 +33,6 @@ if __name__ == "__main__":
 
     for arch in ['x86', 'x86_64', 'armv7', 'armv8', 'mips', 'mips64']:
         for arch_build in arches_build:
-            print(arch)
             settings['arch'] = arch
             settings['arch_build'] = arch_build
             builder.add(settings=settings.copy(), options={}, env_vars={}, build_requires={})

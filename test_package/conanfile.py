@@ -4,6 +4,7 @@
 
 from conans import ConanFile, CMake, tools, RunEnvironment
 import os
+import subprocess
 
 
 class TestPackageConan(ConanFile):
@@ -27,11 +28,27 @@ class TestPackageConan(ConanFile):
         cmake.build()
 
     def test(self):
-        with tools.environment_append(RunEnvironment(self).vars):
-            bin_path = os.path.join("bin", "test_package")
-            if self.settings.os == "Windows":
-                self.run(bin_path)
-            elif self.settings.os == "Macos":
-                self.run("DYLD_LIBRARY_PATH=%s %s" % (os.environ.get('DYLD_LIBRARY_PATH', ''), bin_path))
-            else:
-                self.run("LD_LIBRARY_PATH=%s %s" % (os.environ.get('LD_LIBRARY_PATH', ''), bin_path))
+        output = subprocess.check_output([os.environ['READELF'], '-h', 'test_package']).decode()
+        output = output.split('\n')[1:]
+        readelf = dict()
+        for line in output:
+            if line:
+                tokens = line.split(':')
+                name, value = tokens[0], tokens[1]
+                readelf[name.strip()] = value.strip()
+        machine = {'armv7': 'ARM',
+                   'armv8': 'AArch64',
+                   'x86': 'Intel 80386',
+                   'x86_64': 'Advanced Micro Devices X86-64',
+                   'mips': 'MIPS R3000',
+                   'mips64': 'MIPS R3000'}.get(str(self.settings.arch))
+        elf_class = {'armv7': 'ELF32',
+                     'armv8': 'ELF64',
+                     'x86': 'ELF32',
+                     'x86_64': 'ELF64',
+                     'mips': 'ELF32',
+                     'mips64': 'ELF64'}.get(str(self.settings.arch))
+        if readelf['Machine'] != machine:
+            raise Exception('incorrect machine, expected %s, but found %s' % (machine, readelf['Machine']))
+        if readelf['Class'] != elf_class:
+            raise Exception('incorrect class, expected %s, but found %s' % (elf_class, readelf['Class']))

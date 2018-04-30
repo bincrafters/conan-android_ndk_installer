@@ -131,6 +131,11 @@ class AndroidNDKInstallerConan(ConanFile):
         self.output.info('Creating %s environment variable: %s' % (name, path))
         return path
 
+    def package_id(self):
+        if str(self.settings.compiler.libcxx) in ['libstdc++', 'libstdc++11']:
+            self.info.settings.compiler.libcxx = 'libstdc++'
+        del self.info.settings.build_type
+
     def package_info(self):
         ndk_root = self.package_folder
         ndk_bin = os.path.join(ndk_root, 'bin')

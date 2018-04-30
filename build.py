@@ -14,7 +14,6 @@ if __name__ == "__main__":
     settings = dict()
     settings['compiler'] = 'clang'
     settings['compiler.version'] = '5.0'
-    settings['compiler.libcxx'] = 'libc++'
     settings['os'] = 'Android'
     settings['os.api_level'] = '21'
     if platform.system() == 'Windows':
@@ -30,11 +29,14 @@ if __name__ == "__main__":
         settings['os_build'] = 'Macos'
         arches_build = ['x86_64']
     settings['arch_build'] = 'x86_64'
+    libcxxs = ['libc++', 'libstdc++']
 
     for arch in ['x86', 'x86_64', 'armv7', 'armv8', 'mips', 'mips64']:
         for arch_build in arches_build:
-            settings['arch'] = arch
-            settings['arch_build'] = arch_build
-            builder.add(settings=settings.copy(), options={}, env_vars={}, build_requires={})
+            for libcxx in libcxxs:
+                settings['arch'] = arch
+                settings['arch_build'] = arch_build
+                settings['compiler.libcxx'] = libcxx
+                builder.add(settings=settings.copy(), options={}, env_vars={}, build_requires={})
 
     builder.run()

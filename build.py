@@ -31,7 +31,11 @@ if __name__ == "__main__":
     settings['arch_build'] = 'x86_64'
     libcxxs = ['libc++', 'libstdc++']
 
-    for arch in ['x86', 'x86_64', 'armv7', 'armv8', 'mips', 'mips64']:
+    if 'ARCH' in os.environ:
+        arches = [os.environ['ARCH']]
+    else:
+        arches = ['x86', 'x86_64', 'armv7', 'armv8', 'mips', 'mips64']:
+    for arch in arches:
         for arch_build in arches_build:
             for libcxx in libcxxs:
                 settings['arch'] = arch

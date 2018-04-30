@@ -84,7 +84,6 @@ class AndroidNDKInstallerConan(ConanFile):
         if self.settings.os_build == 'Windows':
             # workaround Windows CMake Clang detection (Determine-Compiler-Standalone.cmake)
             with tools.chdir(os.path.join(self.package_folder, 'bin')):
-                self.run('dir')
                 shutil.copy('clang50.exe', 'clang.exe')
                 shutil.copy('clang50++.exe', 'clang++.exe')
         else:

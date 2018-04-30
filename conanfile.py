@@ -162,6 +162,3 @@ class AndroidNDKInstallerConan(ConanFile):
         self.env_info.OBJDUMP = self.define_tool_var('OBJDUMP', 'objdump')
         self.env_info.READELF = self.define_tool_var('READELF', 'readelf')
         self.env_info.ELFEDIT = self.define_tool_var('ELFEDIT', 'elfedit')
-
-        self.cpp_info.includedirs.append(os.path.join(self.package_folder, 'include', 'c++', '4.9.x'))
-        self.cpp_info.libdirs.append(os.path.join(self.package_folder, self.triplet, 'lib64'))

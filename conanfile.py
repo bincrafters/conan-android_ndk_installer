@@ -132,6 +132,7 @@ class AndroidNDKInstallerConan(ConanFile):
         return path
 
     def package_id(self):
+        self.info.include_build_settings()
         if str(self.settings.compiler.libcxx) in ['libstdc++', 'libstdc++11']:
             self.info.settings.compiler.libcxx = 'libstdc++'
         del self.info.settings.build_type

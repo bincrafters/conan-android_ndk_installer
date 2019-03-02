@@ -12,18 +12,12 @@ class TestPackageConan(ConanFile):
     generators = "cmake"
 
     def build(self):
-        if self.settings.arch == 'mips64':
-            # https://github.com/android-ndk/ndk/issues/399
-            if 'CFLAGS' in os.environ:
-                os.environ['CFLAGS'] += ' -fintegrated-as'
-            else:
-                os.environ['CFLAGS'] = '-fintegrated-as'
-            if 'CXXFLAGS' in os.environ:
-                os.environ['CXXFLAGS'] += ' -fintegrated-as'
-            else:
-                os.environ['CXXFLAGS'] = '-fintegrated-as'
         generator = 'MinGW Makefiles' if os.name == 'nt' else 'Unix Makefiles'
         cmake = CMake(self, generator=generator)
+        #cmake.definitions["ANDROID_PLATFORM"] = os.environ["CONAN_ANDROID_PLATFORM"]
+        #cmake.definitions["ANDROID_TOOLCHAIN"] = os.environ["CONAN_ANDROID_TOOLCHAIN"]
+        #cmake.definitions["ANDROID_ABI"] = os.environ["CONAN_ANDROID_ABI"]
+        #cmake.definitions["ANDROID_STL"] = os.environ["CONAN_ANDROID_STL"]
         cmake.configure()
         cmake.build()
 

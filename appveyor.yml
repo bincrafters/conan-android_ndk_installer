@@ -19,12 +19,6 @@ environment:
           ARCH_BUILD: x86
           ARCH: armv8
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-          ARCH_BUILD: x86
-          ARCH: mips
-        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-          ARCH_BUILD: x86
-          ARCH: mips64
-        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
           ARCH_BUILD: x86_64
           ARCH: x86
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
@@ -36,12 +30,6 @@ environment:
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
           ARCH_BUILD: x86_64
           ARCH: armv8
-        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-          ARCH_BUILD: x86_64
-          ARCH: mips
-        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-          ARCH_BUILD: x86_64
-          ARCH: mips64
 
 install:
   - set PATH=%PATH%;%PYTHON%/Scripts/

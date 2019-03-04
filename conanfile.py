@@ -4,6 +4,8 @@
 from conans import ConanFile, tools
 from conans.errors import ConanInvalidConfiguration
 import os
+import fnmatch
+import shutil
 
 
 class AndroidNDKInstallerConan(ConanFile):
@@ -37,6 +39,10 @@ class AndroidNDKInstallerConan(ConanFile):
         if self.settings.arch in ["x86_64", "armv8"] and api_level < 21:
             raise ConanInvalidConfiguration("minumum API version for architecture %s is 21, "
                                             "but used %s" % (self.settings.arch, api_level))
+        if self.settings.compiler.version != "8":
+            raise ConanInvalidConfiguration("only Clang 8 is supported")
+        if self.settings.compiler.libcxx != "libc++":
+            raise ConanInvalidConfiguration("only libc++ standard library is supported")
 
     def source(self):
         variant = "{0}-{1}".format(self._platform, self.settings.arch_build)
@@ -71,6 +77,15 @@ class AndroidNDKInstallerConan(ConanFile):
         abi = 'androideabi' if self.settings.arch == 'armv7' else 'android'
         return '%s-linux-%s' % (arch, abi)
 
+    @property
+    def _clang_triplet(self):
+        arch = {'armv7': 'armv7a',
+                'armv8': 'aarch64',
+                'x86': 'i686',
+                'x86_64': 'x86_64'}.get(str(self.settings.arch))
+        abi = 'androideabi' if self.settings.arch == 'armv7' else 'android'
+        return '%s-linux-%s' % (arch, abi)
+
     def _fix_permissions(self):
         if os.name != 'posix':
             return
@@ -98,6 +113,21 @@ class AndroidNDKInstallerConan(ConanFile):
                         self.output.info('chmod on Mach-O file: "%s"' % filename)
                         self._chmod_plus_x(filename)
 
+    def _fix_command_files(self):
+        # https://github.com/android-ndk/ndk/issues/920
+        if self.settings.os_build != "Windows":
+            return
+
+        with tools.chdir(os.path.join(self._ndk_root, 'bin')):
+            for filename in os.listdir("."):
+                if fnmatch.fnmatch(filename, "*-linux-android*-clang.cmd"):
+                    newfilename = filename[:-4] + "++.cmd"
+                    if not os.path.isfile(newfilename):
+                        self.output.info("processing %s" % filename)
+                        shutil.copy(filename, newfilename)
+                        tools.replace_in_file(filename, "clang++.exe", "clang.exe", strict=False)
+                        tools.replace_in_file(filename, "-stdlib=libc++", "", strict=False)
+
     def package(self):
         ndk = "android-ndk-%s" % self.version
         self.copy(pattern="*", dst=".", src=ndk, keep_path=True, symlinks=True)
@@ -111,6 +141,7 @@ class AndroidNDKInstallerConan(ConanFile):
                                   "set(ANDROID_HOST_TAG windows-x86_64)",
                                   "set(ANDROID_HOST_TAG windows)", strict=False)
         self._fix_permissions()
+        self._fix_command_files()
 
     @property
     def _host(self):
@@ -123,7 +154,7 @@ class AndroidNDKInstallerConan(ConanFile):
     def _tool_name(self, tool):
         if 'clang' in tool:
             suffix = '.cmd' if self.settings.os_build == 'Windows' else ''
-            return '%s%s-%s%s' % (self._llvm_triplet, self.settings.os.api_level, tool, suffix)
+            return '%s%s-%s%s' % (self._clang_triplet, self.settings.os.api_level, tool, suffix)
         else:
             suffix = '.exe' if self.settings.os_build == 'Windows' else ''
             return '%s-%s%s' % (self._llvm_triplet, tool, suffix)
@@ -150,6 +181,9 @@ class AndroidNDKInstallerConan(ConanFile):
         self.output.info('Creating NDK_ROOT environment variable: %s' % self._ndk_root)
         self.env_info.NDK_ROOT = self._ndk_root
 
+        self.output.info('Creating ANDROID_NDK_HOME environment variable: %s' % self.package_folder)
+        self.env_info.ANDROID_NDK_HOME = self.package_folder
+
         self.output.info('Creating CHOST environment variable: %s' % self._llvm_triplet)
         self.env_info.CHOST = self._llvm_triplet
 
@@ -165,6 +199,9 @@ class AndroidNDKInstallerConan(ConanFile):
 
         self.output.info('Creating self.cpp_info.sysroot: %s' % ndk_sysroot)
         self.cpp_info.sysroot = ndk_sysroot
+
+        self.output.info('Creating ANDROID_NATIVE_API_LEVEL environment variable: %s' % self.settings.os.api_level)
+        self.env_info.ANDROID_NATIVE_API_LEVEL = self.settings.os.api_level
 
         make = 'make.exe' if self.settings.os_build == 'Windows' else 'make'
         make = os.path.join(self.package_folder, "prebuilt", self._host, "bin", make)

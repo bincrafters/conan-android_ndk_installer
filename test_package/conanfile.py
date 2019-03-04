@@ -14,14 +14,14 @@ class TestPackageConan(ConanFile):
     def build(self):
         generator = 'MinGW Makefiles' if os.name == 'nt' else 'Unix Makefiles'
         cmake = CMake(self, generator=generator)
-        #cmake.definitions["ANDROID_PLATFORM"] = os.environ["CONAN_ANDROID_PLATFORM"]
-        #cmake.definitions["ANDROID_TOOLCHAIN"] = os.environ["CONAN_ANDROID_TOOLCHAIN"]
-        #cmake.definitions["ANDROID_ABI"] = os.environ["CONAN_ANDROID_ABI"]
-        #cmake.definitions["ANDROID_STL"] = os.environ["CONAN_ANDROID_STL"]
         cmake.configure()
         cmake.build()
 
     def test(self):
+        for var in ["CC", "CXX", "LD", "AR", "AS", "RANDLIB", "STRIP", "ADDR2LINE", "NM",
+                    "OBJCOPY", "OBJDUMP", "READELF", "ELFEDIT"]:
+            self.run("%s --version" % os.environ[var], run_environment=True)
+
         output = subprocess.check_output([os.environ['READELF'], '-h', 'test_package']).decode()
         output = output.split('\n')[1:]
         readelf = dict()

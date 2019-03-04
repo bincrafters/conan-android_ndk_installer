@@ -178,6 +178,9 @@ class AndroidNDKInstallerConan(ConanFile):
         self.output.info('Creating self.cpp_info.sysroot: %s' % ndk_sysroot)
         self.cpp_info.sysroot = ndk_sysroot
 
+        self.output.info('Creating ANDROID_NATIVE_API_LEVEL environment variable: %s' % self.settings.os.api_level)
+        self.env_info.ANDROID_NATIVE_API_LEVEL = self.settings.os.api_level
+
         make = 'make.exe' if self.settings.os_build == 'Windows' else 'make'
         make = os.path.join(self.package_folder, "prebuilt", self._host, "bin", make)
         self.output.info('Creating CONAN_MAKE_PROGRAM environment variable: %s' % make)

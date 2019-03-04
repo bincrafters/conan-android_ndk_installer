@@ -39,6 +39,10 @@ class AndroidNDKInstallerConan(ConanFile):
         if self.settings.arch in ["x86_64", "armv8"] and api_level < 21:
             raise ConanInvalidConfiguration("minumum API version for architecture %s is 21, "
                                             "but used %s" % (self.settings.arch, api_level))
+        if self.settings.compiler.version != "8":
+            raise ConanInvalidConfiguration("only Clang 8 is supported")
+        if self.settings.compiler.libcxx != "libc++":
+            raise ConanInvalidConfiguration("only libc++ standard library is supported")
 
     def source(self):
         variant = "{0}-{1}".format(self._platform, self.settings.arch_build)

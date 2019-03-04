@@ -18,7 +18,7 @@ class TestPackageConan(ConanFile):
         cmake.build()
 
     def test(self):
-        for var in ["CC", "CXX", "LD", "AR", "AS", "RANDLIB", "STRIP", "ADDR2LINE", "NM",
+        for var in ["CC", "CXX", "LD", "AR", "AS", "RANLIB", "STRIP", "ADDR2LINE", "NM",
                     "OBJCOPY", "OBJDUMP", "READELF", "ELFEDIT"]:
             self.run("%s --version" % os.environ[var], run_environment=True)
 

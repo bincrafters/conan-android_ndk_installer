@@ -71,6 +71,15 @@ class AndroidNDKInstallerConan(ConanFile):
         abi = 'androideabi' if self.settings.arch == 'armv7' else 'android'
         return '%s-linux-%s' % (arch, abi)
 
+    @property
+    def _clang_triplet(self):
+        arch = {'armv7': 'armv7a',
+                'armv8': 'aarch64',
+                'x86': 'i686',
+                'x86_64': 'x86_64'}.get(str(self.settings.arch))
+        abi = 'androideabi' if self.settings.arch == 'armv7' else 'android'
+        return '%s-linux-%s' % (arch, abi)
+
     def _fix_permissions(self):
         if os.name != 'posix':
             return
@@ -123,7 +132,7 @@ class AndroidNDKInstallerConan(ConanFile):
     def _tool_name(self, tool):
         if 'clang' in tool:
             suffix = '.cmd' if self.settings.os_build == 'Windows' else ''
-            return '%s%s-%s%s' % (self._llvm_triplet, self.settings.os.api_level, tool, suffix)
+            return '%s%s-%s%s' % (self._clang_triplet, self.settings.os.api_level, tool, suffix)
         else:
             suffix = '.exe' if self.settings.os_build == 'Windows' else ''
             return '%s-%s%s' % (self._llvm_triplet, tool, suffix)

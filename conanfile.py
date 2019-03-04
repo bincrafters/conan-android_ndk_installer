@@ -4,6 +4,8 @@
 from conans import ConanFile, tools
 from conans.errors import ConanInvalidConfiguration
 import os
+import fnmatch
+import shutil
 
 
 class AndroidNDKInstallerConan(ConanFile):
@@ -107,6 +109,21 @@ class AndroidNDKInstallerConan(ConanFile):
                         self.output.info('chmod on Mach-O file: "%s"' % filename)
                         self._chmod_plus_x(filename)
 
+    def _fix_command_files(self):
+        # https://github.com/android-ndk/ndk/issues/920
+        if self.settings.os_build != "Windows":
+            return
+
+        with tools.chdir(os.path.join(self._ndk_root, 'bin')):
+            for filename in os.listdir("."):
+                if fnmatch.fnmatch(filename, "*-linux-android*-clang.cmd"):
+                    newfilename = filename[:-4] + "++.cmd"
+                    if not os.path.isfile(newfilename):
+                        self.output.info("processing %s" % filename)
+                        shutil.copy(filename, newfilename)
+                        tools.replace_in_file(filename, "clang++.exe", "clang.exe", strict=False)
+                        tools.replace_in_file(filename, "-stdlib=libc++", "", strict=False)
+
     def package(self):
         ndk = "android-ndk-%s" % self.version
         self.copy(pattern="*", dst=".", src=ndk, keep_path=True, symlinks=True)
@@ -120,6 +137,7 @@ class AndroidNDKInstallerConan(ConanFile):
                                   "set(ANDROID_HOST_TAG windows-x86_64)",
                                   "set(ANDROID_HOST_TAG windows)", strict=False)
         self._fix_permissions()
+        self._fix_command_files()
 
     @property
     def _host(self):

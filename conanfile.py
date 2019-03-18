@@ -187,9 +187,6 @@ class AndroidNDKInstallerConan(ConanFile):
         self.output.info('Creating CHOST environment variable: %s' % self._llvm_triplet)
         self.env_info.CHOST = self._llvm_triplet
 
-        self.output.info('Appending PATH environment variable: %s' % ndk_bin)
-        self.env_info.PATH.append(ndk_bin)
-
         ndk_sysroot = os.path.join(self._ndk_root, 'sysroot')
         self.output.info('Creating CONAN_CMAKE_FIND_ROOT_PATH environment variable: %s' % ndk_sysroot)
         self.env_info.CONAN_CMAKE_FIND_ROOT_PATH = ndk_sysroot

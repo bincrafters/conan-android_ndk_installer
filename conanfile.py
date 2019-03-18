@@ -215,7 +215,7 @@ class AndroidNDKInstallerConan(ConanFile):
         self.env_info.CONAN_CMAKE_PROGRAM = cmake_wrapper
 
         toolchain = os.path.join(self.package_folder, "build", "cmake", "android.toolchain.cmake")
-        self.output.info('Creating CONAN_CMAKE_TOOLCHAIN_FILE environment variable: %s' % make)
+        self.output.info('Creating CONAN_CMAKE_TOOLCHAIN_FILE environment variable: %s' % toolchain)
         self.env_info.CONAN_CMAKE_TOOLCHAIN_FILE = toolchain
 
         self.env_info.CC = self._define_tool_var('CC', 'clang')

@@ -203,11 +203,6 @@ class AndroidNDKInstallerConan(ConanFile):
         self.output.info('Creating ANDROID_NATIVE_API_LEVEL environment variable: %s' % self.settings.os.api_level)
         self.env_info.ANDROID_NATIVE_API_LEVEL = str(self.settings.os.api_level)
 
-        make = 'make.exe' if self.settings.os_build == 'Windows' else 'make'
-        make = os.path.join(self.package_folder, "prebuilt", self._host, "bin", make)
-        self.output.info('Creating CONAN_MAKE_PROGRAM environment variable: %s' % make)
-        self.env_info.CONAN_MAKE_PROGRAM = make
-
         self._chmod_plus_x(os.path.join(self.package_folder, "cmake-wrapper"))
         cmake_wrapper = "cmake-wrapper.cmd" if self.settings.os_build == "Windows" else "cmake-wrapper"
         cmake_wrapper = os.path.join(self.package_folder, cmake_wrapper)

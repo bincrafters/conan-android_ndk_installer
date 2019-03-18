@@ -227,7 +227,7 @@ class AndroidNDKInstallerConan(ConanFile):
         self.env_info.ANDROID_PLATFORM = "android-%s" % self.settings.os.api_level
         self.env_info.ANDROID_TOOLCHAIN = "clang"
         self.env_info.ANDROID_ABI = self._android_abi
-        self.env_info.ANDROID_STL = "c++_shared"
+        self.env_info.ANDROID_STL = "c++_static"
 
         self.env_info.CMAKE_FIND_ROOT_PATH_MODE_PROGRAM = "BOTH"
         self.env_info.CMAKE_FIND_ROOT_PATH_MODE_LIBRARY = "BOTH"

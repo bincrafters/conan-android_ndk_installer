@@ -10,7 +10,7 @@ import shutil
 
 class AndroidNDKInstallerConan(ConanFile):
     name = "android_ndk_installer"
-    version = "r19b"
+    version = "r19c"
     description = "The Android NDK is a toolset that lets you implement parts of your app in " \
                   "native code, using languages such as C and C++"
     url = "https://github.com/bincrafters/conan-android_ndk_installer"
@@ -49,10 +49,10 @@ class AndroidNDKInstallerConan(ConanFile):
         archive_name = "android-ndk-{0}-{1}.zip".format(self.version, variant)
         source_url = "https://dl.google.com/android/repository/" + archive_name
 
-        sha1 = {"windows-x86": "805e95ba96e5cc46060f5585594c6e2aef8c0304",
-                "windows-x86_64": "1aaedfa02ae3b2cb09ef1ca262ceaf2aca436f96",
-                "darwin-x86_64": "02a74f9b211f22bea223e91acc6f40853db818e4",
-                "linux-x86_64": "16f62346ab47f7125a0e977dcc08f54881f8a3d7"}.get(variant)
+        sha1 = {"windows-x86": "132cc0c9e31b9e58ad6505b0816ff9e524422ed2",
+                "windows-x86_64": "c4cd8c0b6e7618ca0a871a5f24102e40c239f6a3",
+                "darwin-x86_64": "f46b8193109bba8a58e0461c1a48f4534051fb25",
+                "linux-x86_64": "fd94d0be6017c6acbd193eb95e09cf4b6f61b834"}.get(variant)
         tools.get(source_url, sha1=sha1)
 
     @property
@@ -113,21 +113,6 @@ class AndroidNDKInstallerConan(ConanFile):
                         self.output.info('chmod on Mach-O file: "%s"' % filename)
                         self._chmod_plus_x(filename)
 
-    def _fix_command_files(self):
-        # https://github.com/android-ndk/ndk/issues/920
-        if self.settings.os_build != "Windows":
-            return
-
-        with tools.chdir(os.path.join(self._ndk_root, 'bin')):
-            for filename in os.listdir("."):
-                if fnmatch.fnmatch(filename, "*-linux-android*-clang.cmd"):
-                    newfilename = filename[:-4] + "++.cmd"
-                    if not os.path.isfile(newfilename):
-                        self.output.info("processing %s" % filename)
-                        shutil.copy(filename, newfilename)
-                        tools.replace_in_file(filename, "clang++.exe", "clang.exe", strict=False)
-                        tools.replace_in_file(filename, "-stdlib=libc++", "", strict=False)
-
     def package(self):
         ndk = "android-ndk-%s" % self.version
         self.copy(pattern="*", dst=".", src=ndk, keep_path=True, symlinks=True)
@@ -141,7 +126,6 @@ class AndroidNDKInstallerConan(ConanFile):
                                   "set(ANDROID_HOST_TAG windows-x86_64)",
                                   "set(ANDROID_HOST_TAG windows)", strict=False)
         self._fix_permissions()
-        self._fix_command_files()
 
     @property
     def _host(self):

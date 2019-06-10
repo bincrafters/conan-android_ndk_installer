@@ -1,6 +1,6 @@
 [![Download](https://api.bintray.com/packages/bincrafters/public-conan/android_ndk_installer%3Abincrafters/images/download.svg) ](https://bintray.com/bincrafters/public-conan/android_ndk_installer%3Abincrafters/_latestVersion)
 [![Build Status](https://travis-ci.org/bincrafters/conan-android_ndk_installer.svg?branch=testing%2Fr16b)](https://travis-ci.org/bincrafters/conan-android_ndk_installer)
-[![Build status](https://ci.appveyor.com/api/projects/status/github/bincrafters/conan-android_ndk_installer?branch=testing%2Fr16b&svg=true)](https://ci.appveyor.com/project/bincrafters/conan-android_ndk_installer)
+[![Build status](https://ci.appveyor.com/api/projects/status/github/bincrafters/conan-android_ndk_installer?branch=stable%2Fr16b&svg=true)](https://ci.appveyor.com/project/bincrafters/conan-android-ndk-installer)
 
 [Conan.io](https://conan.io) package recipe for [*android_ndk_installer*](https://developer.android.com/ndk/).
 

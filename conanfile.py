@@ -4,8 +4,6 @@
 from conans import ConanFile, tools
 from conans.errors import ConanInvalidConfiguration
 import os
-import fnmatch
-import shutil
 
 
 class AndroidNDKInstallerConan(ConanFile):
@@ -160,8 +158,6 @@ class AndroidNDKInstallerConan(ConanFile):
             os.chmod(filename, os.stat(filename).st_mode | 0o111)
 
     def package_info(self):
-        ndk_bin = os.path.join(self._ndk_root, 'bin')
-
         self.output.info('Creating NDK_ROOT environment variable: %s' % self._ndk_root)
         self.env_info.NDK_ROOT = self._ndk_root
 

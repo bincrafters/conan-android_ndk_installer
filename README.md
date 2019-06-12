@@ -12,14 +12,14 @@ The packages generated with this **conanfile** can be found on [Bintray](https:/
 
 ### Basic setup
 
-    $ conan install android_ndk_installer/r16b@bincrafters/testing
+    $ conan install android_ndk_installer/r19c@bincrafters/stable
 
 ### Project setup
 
 If you handle multiple dependencies in your project is better to add a *conanfile.txt*
 
-    [requires]
-    android_ndk_installer/r16b@bincrafters/testing
+    [build_requires]
+    android_ndk_installer/r19c@bincrafters/stable
 
 
 Complete the installation of requirements for your project running:
@@ -36,7 +36,7 @@ The example below shows the commands used to publish to bincrafters conan reposi
 
 The following command both runs all the steps of the conan file, and publishes the package to the local system cache.  This includes downloading dependencies from "build_requires" and "requires" , and then running the build() method.
 
-    $ conan create bincrafters/testing
+    $ conan create . bincrafters/stable
 
 
 
@@ -46,7 +46,7 @@ The following command both runs all the steps of the conan file, and publishes t
 
 ## Upload
 
-    $ conan upload android_ndk_installer/r16b@bincrafters/testing --all -r bincrafters
+    $ conan upload android_ndk_installer/r19c@bincrafters/stable --all -r bincrafters
 
 
 ## Conan Recipe License
@@ -54,4 +54,4 @@ The following command both runs all the steps of the conan file, and publishes t
 NOTE: The conan recipe license applies only to the files of this recipe, which can be used to build and package android_ndk_installer.
 It does *not* in any way apply or is related to the actual software being packaged.
 
-[MIT](git@github.com:bincrafters/conan-android_ndk_installer.git/blob/testing/r16b/LICENSE)
+[MIT](https://github.com/bincrafters/conan-android_ndk_installer/blob/stable/r19c/LICENSE)

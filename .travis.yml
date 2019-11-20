@@ -1,8 +1,8 @@
 linux: &linux
    os: linux
-   sudo: required
+   dist: bionic
    language: python
-   python: "3.6"
+   python: "3.7"
    services:
      - docker
 osx: &osx
@@ -32,9 +32,9 @@ matrix:
         env: ARCH=armv8
 
 install:
-  - chmod +x .travis/install.sh
-  - ./.travis/install.sh
+  - chmod +x .ci/install.sh
+  - ./.ci/install.sh
 
 script:
-  - chmod +x .travis/run.sh
-  - ./.travis/run.sh
+  - chmod +x .ci/run.sh
+  - ./.ci/run.sh

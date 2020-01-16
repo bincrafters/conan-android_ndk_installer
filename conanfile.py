@@ -5,7 +5,7 @@ import os
 
 class AndroidNDKInstallerConan(ConanFile):
     name = "android_ndk_installer"
-    version = "r20b"
+    version = "r21"
     description = "The Android NDK is a toolset that lets you implement parts of your app in " \
                   "native code, using languages such as C and C++"
     url = "https://github.com/bincrafters/conan-android_ndk_installer"
@@ -18,24 +18,21 @@ class AndroidNDKInstallerConan(ConanFile):
     exports_sources = ["cmake-wrapper.cmd", "cmake-wrapper"]
 
     settings = {"os_build": ["Windows", "Linux", "Macos"],
-                "arch_build": ["x86", "x86_64"],
+                "arch_build": ["x86_64"],
                 "compiler": ["clang"],
                 "os": ["Android"],
                 "arch": ["x86", "x86_64", "armv7", "armv8"]}
 
     def configure(self):
         api_level = int(str(self.settings.os.api_level))
-        if self.settings.os_build in ["Linux", "Macos"] and self.settings.arch_build == "x86":
-            raise ConanInvalidConfiguration("x86 host is not supported "
-                                            "for %s" % self.settings.os_build)
         if api_level < 16:
             raise ConanInvalidConfiguration("minumum API version for architecture %s is 16, "
                                             "but used %s" % (self.settings.arch, api_level))
         if self.settings.arch in ["x86_64", "armv8"] and api_level < 21:
             raise ConanInvalidConfiguration("minumum API version for architecture %s is 21, "
                                             "but used %s" % (self.settings.arch, api_level))
-        if self.settings.compiler.version != "8":
-            raise ConanInvalidConfiguration("only Clang 8 is supported")
+        if self.settings.compiler.version != "9":
+            raise ConanInvalidConfiguration("only Clang 9 is supported")
         if not str(self.settings.compiler.libcxx) in ["c++_shared", "c++_static"]:
             raise ConanInvalidConfiguration("only libc++ standard library is supported")
 
@@ -44,10 +41,9 @@ class AndroidNDKInstallerConan(ConanFile):
         archive_name = "android-ndk-{0}-{1}.zip".format(self.version, variant)
         source_url = "https://dl.google.com/android/repository/" + archive_name
 
-        sha1 = {"windows-x86": "71a1ba20475da1d83b0f1a1826813008f628d59b",
-                "windows-x86_64": "ead0846608040b8344ad2bc9bc721b88cf13fb8d",
-                "darwin-x86_64": "b51290ab69cb89de1f0ba108702277bc333b38be",
-                "linux-x86_64": "d903fdf077039ad9331fb6c3bee78aa46d45527b"}.get(variant)
+        sha1 = {"windows-x86_64": "c61631eacbd40c30273b716a4e589c6877b85419",
+                "darwin-x86_64": "0d50636cc0e34ed3ba540d6d5818ea0cf10f16aa",
+                "linux-x86_64": "afc9c0b9faad222898ac8168c78ad4ccac8a1b5c"}.get(variant)
         tools.get(source_url, sha1=sha1)
 
     @property
@@ -116,15 +112,11 @@ class AndroidNDKInstallerConan(ConanFile):
         self.copy("cmake-wrapper.cmd")
         self.copy("cmake-wrapper")
 
-        if self.settings.arch_build == "x86":
-            tools.replace_in_file(os.path.join(self.package_folder, "build", "cmake", "android.toolchain.cmake"),
-                                  "set(ANDROID_HOST_TAG windows-x86_64)",
-                                  "set(ANDROID_HOST_TAG windows)", strict=False)
         self._fix_permissions()
 
     @property
     def _host(self):
-        return self._platform if self.settings.arch_build == "x86" else self._platform + "-x86_64"
+        return self._platform + "-x86_64"
 
     @property
     def _ndk_root(self):

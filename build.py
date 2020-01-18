@@ -21,7 +21,7 @@ if __name__ == "__main__":
         if 'ARCH_BUILD' in os.environ:
             arches_build = [os.environ['ARCH_BUILD']]
         else:
-            arches_build = ['x86', 'x86_64']
+            arches_build = ['x86_64']
     elif platform.system() == 'Linux':
         settings['os_build'] = 'Linux'
         arches_build = ['x86_64']

@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
     settings = dict()
     settings['compiler'] = 'clang'
-    settings['compiler.version'] = '8'
+    settings['compiler.version'] = '9'
     settings['compiler.libcxx'] = 'libc++'
     settings['os'] = 'Android'
     if platform.system() == 'Windows':

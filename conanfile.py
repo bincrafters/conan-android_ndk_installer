@@ -32,8 +32,8 @@ class AndroidNDKInstallerConan(ConanFile):
                                             "but used %s" % (self.settings.arch, api_level))
         if self.settings.compiler.version != "9":
             raise ConanInvalidConfiguration("only Clang 9 is supported")
-        if not str(self.settings.compiler.libcxx) in ["c++_shared", "c++_static"]:
-            raise ConanInvalidConfiguration("only libc++ standard library is supported")
+        if not str(self.settings.compiler.libcxx) in ["c++_shared", "c++_static", "libc++"]:
+            raise ConanInvalidConfiguration("only libc++ standard library is supported (c++_shared, c++_static & libc++ values are allwed)")
 
     def source(self):
         variant = "{0}-{1}".format(self._platform, self.settings.arch_build)
@@ -195,7 +195,8 @@ class AndroidNDKInstallerConan(ConanFile):
         self.env_info.ANDROID_PLATFORM = "android-%s" % self.settings.os.api_level
         self.env_info.ANDROID_TOOLCHAIN = "clang"
         self.env_info.ANDROID_ABI = self._android_abi
-        self.env_info.ANDROID_STL = str(self.settings.compiler.libcxx)
+        libcxx_str = str(self.settings.compiler.libcxx)
+        self.env_info.ANDROID_STL = libcxx_str if libcxx_str.startswith('c++_') else 'c++_shared'
 
         self.env_info.CMAKE_FIND_ROOT_PATH_MODE_PROGRAM = "BOTH"
         self.env_info.CMAKE_FIND_ROOT_PATH_MODE_LIBRARY = "BOTH"

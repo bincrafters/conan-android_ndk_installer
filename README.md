@@ -1,6 +1,6 @@
 [![Download](https://api.bintray.com/packages/bincrafters/public-conan/android_ndk_installer%3Abincrafters/images/download.svg) ](https://bintray.com/bincrafters/public-conan/android_ndk_installer%3Abincrafters/_latestVersion)
-[![Build Status](https://travis-ci.com/bincrafters/conan-android_ndk_installer.svg?branch=stable%2Fr19c)](https://travis-ci.com/bincrafters/conan-android_ndk_installer)
-[![Build status](https://ci.appveyor.com/api/projects/status/github/bincrafters/conan-android_ndk_installer?branch=stable%2Fr19c&svg=true)](https://ci.appveyor.com/project/bincrafters/conan-android-ndk-installer)
+[![Build Status](https://travis-ci.com/bincrafters/conan-android_ndk_installer.svg?branch=testing%2Fr21)](https://travis-ci.com/bincrafters/conan-android_ndk_installer)
+[![Build status](https://ci.appveyor.com/api/projects/status/github/bincrafters/conan-android_ndk_installer?branch=testing%2Fr21&svg=true)](https://ci.appveyor.com/project/bincrafters/conan-android-ndk-installer)
 
 [Conan.io](https://conan.io) package recipe for [*android_ndk_installer*](https://developer.android.com/ndk/).
 
@@ -46,7 +46,7 @@ The following command both runs all the steps of the conan file, and publishes t
 
 ## Upload
 
-    $ conan upload android_ndk_installer/r16b@bincrafters/testing --all -r bincrafters
+    $ conan upload android_ndk_installer/r21@bincrafters/testing --all -r bincrafters
 
 
 ## Conan Recipe License
@@ -54,4 +54,4 @@ The following command both runs all the steps of the conan file, and publishes t
 NOTE: The conan recipe license applies only to the files of this recipe, which can be used to build and package android_ndk_installer.
 It does *not* in any way apply or is related to the actual software being packaged.
 
-[MIT](git@github.com:bincrafters/conan-android_ndk_installer.git/blob/testing/r16b/LICENSE)
+[MIT](git@github.com:bincrafters/conan-android_ndk_installer.git/blob/testing/r21/LICENSE)

@@ -12,7 +12,6 @@ class AndroidNDKInstallerConan(ConanFile):
     homepage = "https://developer.android.com/ndk/"
     topics = ("NDK", "android", "toolchain", "compiler")
     license = "Apache-2.0"
-    exports = ["LICENSE.md"]
     short_paths = True
     no_copy_source = True
     exports_sources = ["cmake-wrapper.cmd", "cmake-wrapper"]

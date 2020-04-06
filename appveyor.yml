@@ -6,10 +6,6 @@ environment:
     matrix:
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
           ARCH_BUILD: x86
-          ARCH: x86
-          CONAN_MAKE_PROGRAM: C:\\tools\\mingw64\\binmingw32-make.exe
-        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-          ARCH_BUILD: x86
           ARCH: x86_64
           CONAN_MAKE_PROGRAM: C:\\tools\\mingw64\\binmingw32-make.exe
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
@@ -19,10 +15,6 @@ environment:
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
           ARCH_BUILD: x86
           ARCH: armv8
-          CONAN_MAKE_PROGRAM: C:\\tools\\mingw64\\binmingw32-make.exe
-        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-          ARCH_BUILD: x86_64
-          ARCH: x86
           CONAN_MAKE_PROGRAM: C:\\tools\\mingw64\\binmingw32-make.exe
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
           ARCH_BUILD: x86_64

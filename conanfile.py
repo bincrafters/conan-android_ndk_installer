@@ -5,7 +5,7 @@ import os
 
 class AndroidNDKInstallerConan(ConanFile):
     name = "android_ndk_installer"
-    version = "r21b"
+    version = "r21d"
     description = "The Android NDK is a toolset that lets you implement parts of your app in " \
                   "native code, using languages such as C and C++"
     url = "https://github.com/bincrafters/conan-android_ndk_installer"
@@ -40,9 +40,9 @@ class AndroidNDKInstallerConan(ConanFile):
         archive_name = "android-ndk-{0}-{1}.zip".format(self.version, variant)
         source_url = "https://dl.google.com/android/repository/" + archive_name
 
-        sha1 = {"windows-x86_64": "6809fac4a6e829f4bac64628fa9835d57bbd61a8",
-                "darwin-x86_64": "e1de2f749c5c32ae991c3ccaabfcdf7688ee221f",
-                "linux-x86_64": "50250fcba479de477b45801e2699cca47f7e1267"}.get(variant)
+        sha1 = {"windows-x86_64": "99175ce1210258f2280568cd340e0666c69955c7",
+                "darwin-x86_64": "ef06c9f9d7efd6f243eb3c05ac440562ae29ae12",
+                "linux-x86_64": "bcf4023eb8cb6976a4c7cff0a8a8f145f162bf4d"}.get(variant)
         tools.get(source_url, sha1=sha1)
 
     @property
